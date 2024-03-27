@@ -1,11 +1,11 @@
 import { useState } from 'react'
+import AppRoute from './routes/AppRoute'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <h1 className='text-2xl'>Shivam</h1>
+      <AppRoute/>
     </>
   )
 }
