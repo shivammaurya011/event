@@ -46,14 +46,65 @@ const signin = async (req, res) => {
         };
         const token = jwt.sign(tokenData, secretKey, { expiresIn: '1h' });
 
-
         res.cookie('token', token, {
             httpOnly: true,
+            secure: true,
             maxAge: 3600000, 
         });
         res.status(200).json({ message: "Signin successful", user });
     } catch (error) {
         console.error("Error in signin:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const google = async (req, res, next) => {
+    const { email, name, googlePhotoUrl } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (user) {
+            // If user exists, generate token and send it in response
+            const tokenData = {
+                userId: user._id,
+                email: user.email,
+                role: user.role
+            };
+            const token = jwt.sign(tokenData, secretKey, { expiresIn: '1h' });
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: true,
+                maxAge: 3600000, // 1 hour
+            });
+            res.status(200).json({ message: "Signin successful", user });
+        } else {
+            // If user doesn't exist, create new user
+            const hashedPassword = await generatePassword();
+            const newUser = new User({
+                fullName: name,
+                email,
+                password: hashedPassword,
+                profilePicture: googlePhotoUrl // Assuming your user model has a field for profile picture
+            });
+            await newUser.save();
+
+            // Generate token for new user
+            const tokenData = {
+                userId: newUser._id,
+                email: newUser.email,
+                role: newUser.role
+            };
+            const token = jwt.sign(tokenData, secretKey, { expiresIn: '1h' });
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: true,
+                maxAge: 3600000, // 1 hour
+            });
+            res.status(201).json({ message: "User created successfully", user: newUser });
+        }
+    } catch (error) {
+        console.error("Error in Google authentication:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -80,7 +131,7 @@ const profile = async (req, res) => {
 const allUsers = async (req, res) => {
     try {
         const users = await User.find({});
-        res.status(200).json({users});
+        res.status(200).json({ users });
     } catch (error) {
         console.error("Error in allUsers:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -114,7 +165,6 @@ const updateUser = async (req, res) => {
     }
 };
 
-
 const deleteUser = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -129,4 +179,15 @@ const deleteUser = async (req, res) => {
     }
 };
 
-export { signup, signin, signout, profile, allUsers, updateUser, deleteUser };
+const generatePassword = async () => {
+    try {
+        const randomString = Math.random().toString(36).slice(-8);
+        const hashedPassword = await bcrypt.hash(randomString, 10);
+        return hashedPassword;
+    } catch (error) {
+        console.error("Error generating password:", error);
+        throw error;
+    }
+};
+
+export { signup, signin, google, signout, profile, allUsers, updateUser, deleteUser };

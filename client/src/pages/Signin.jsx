@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Spinner, TextInput } from 'flowbite-react'; 
 import { signinSuccess, signinStart, signinFailure } from '../redux/slices/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import OAuth from '../components/OAuth';
 
 function Signin() {
   const { isLoading, isError } = useSelector(state => state.user);
@@ -37,6 +38,7 @@ function Signin() {
         dispatch(signinFailure(data.message));
       } else {
         dispatch(signinSuccess(data));
+        
         navigate('/');
         setFormData({
           email: '',
@@ -60,6 +62,7 @@ function Signin() {
         <Button type='submit' gradientDuoTone={'purpleToPink'} disabled={isLoading}>
           {isLoading ? (<Spinner size={'sm'}><span className='pl-3'>Loading</span></Spinner>) : 'Sign In'}
         </Button>
+        <OAuth/>
       </form>
       <div className='mt-6 w-full flex justify-center text-base font-medium dark:text-white gap-2 items-center'>
         <span>Don't have an account?</span>

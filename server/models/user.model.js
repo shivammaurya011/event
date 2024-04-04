@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
+    profilePicture:{
+        type: String,
+        default: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngwing.com%2Fen%2Fsearch%3Fq%3Davatar&psig=AOvVaw2Zqt_nfujJlybDzVqBC-jv&ust=1712152490744000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCJCcppnXo4UDFQAAAAAdAAAAABAE'
+    },
     avatar:{
         type: String,
     }
