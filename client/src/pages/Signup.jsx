@@ -53,7 +53,7 @@ function Signup() {
   }
 
   return (
-    <div className='w-[40%] mx-auto my-[5%] p-10 border rounded shadow-2xl'>
+    <div className='w-[40%] mx-auto my-[5%] p-10 border dark:bg-black rounded shadow-2xl'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <TextInput type='text' placeholder='Full Name' id='fullName' name='fullName' value={formData.fullName} onChange={handleChange}/>
         <TextInput type='email' placeholder='Email' id='email' name='email' value={formData.email} onChange={handleChange}/>

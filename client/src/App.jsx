@@ -6,11 +6,11 @@ import Footers from './components/Footers'
 function App() {
 
   return (
-    <>
+    <div className='dark:bg-[rgb(16, 23, 42)]'>
       <Header/>
       <AppRoute/>
       <Footers/>
-    </>
+    </div>
   )
 }
 
